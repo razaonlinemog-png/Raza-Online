@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Danish With AI | Developer Danish Raza</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background:#f0f0f0;
+}
+
+.section{
+margin:40px 0;
+}
+
+.page{
+
+width:6in;
+height:4in;
+
+margin:auto;
+
+display:grid;
+
+grid-template-columns:repeat(4,1.4in);
+grid-template-rows:repeat(2,1.8in);
+
+gap:0.1in;
+
+justify-content:center;
+align-content:center;
+
+background:white;
+}
+
+.photo{
+
+width:1.4in;
+height:1.8in;
+
+border:1px solid black;
+
+overflow:hidden;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:white;
+}
+
+.photo img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+object-position:center;
+
+cursor:grab;
+
+}
+
+button{
+margin:5px;
+padding:10px 15px;
+font-size:15px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Danish With AI</h2>
+<p>Developer : Danish Raza</p>
+
+<!-- CATEGORY A -->
+
+<div class="section">
+
+<h3>Category A - Basic Tool</h3>
+
+<input type="file" id="uploadA">
+
+<br><br>
+
+<button onclick="removeBGA()">Remove Background</button>
+<button onclick="setBGA('blue')">Blue</button>
+<button onclick="setBGA('white')">White</button>
+
+<input type="color" id="colorPickA" onchange="customBGA()">
+
+<div class="page" id="pageA">
+
+<div class="photo"><img id="a1"></div>
+<div class="photo"><img id="a2"></div>
+<div class="photo"><img id="a3"></div>
+<div class="photo"><img id="a4"></div>
+
+<div class="photo"><img id="a5"></div>
+<div class="photo"><img id="a6"></div>
+<div class="photo"><img id="a7"></div>
+<div class="photo"><img id="a8"></div>
+
+</div>
+
+<br>
+
+<button onclick="printPage()">Print</button>
+<button onclick="downloadPDF('pageA')">Download PDF</button>
+
+</div>
+
+<!-- CATEGORY UPDATED -->
+
+<div class="section">
+
+<h3>Category Updated - Advanced Tool</h3>
+
+<input type="file" id="uploadB">
+
+<br><br>
+
+<button onclick="removeBGB()">Remove Background</button>
+<button onclick="setBGB('blue')">Blue</button>
+<button onclick="setBGB('white')">White</button>
+
+<input type="color" id="colorPickB" onchange="customBGB()">
+
+<br><br>
+
+<label>Zoom</label>
+<input type="range" min="1" max="2" step="0.1" value="1" id="zoom">
+
+<div class="page" id="pageB">
+
+<div class="photo"><img id="b1"></div>
+<div class="photo"><img id="b2"></div>
+<div class="photo"><img id="b3"></div>
+<div class="photo"><img id="b4"></div>
+
+<div class="photo"><img id="b5"></div>
+<div class="photo"><img id="b6"></div>
+<div class="photo"><img id="b7"></div>
+<div class="photo"><img id="b8"></div>
+
+</div>
+
+<br>
+
+<button onclick="printPage()">Print</button>
+<button onclick="downloadPDF('pageB')">Download PDF</button>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+
+let imgA=""
+let imgB=""
+
+document.getElementById("uploadA").onchange=function(e){
+
+imgA=e.target.files[0]
+
+let url=URL.createObjectURL(imgA)
+
+for(let i=1;i<=8;i++){
+document.getElementById("a"+i).src=url
+}
+
+}
+
+document.getElementById("uploadB").onchange=function(e){
+
+imgB=e.target.files[0]
+
+let url=URL.createObjectURL(imgB)
+
+for(let i=1;i<=8;i++){
+document.getElementById("b"+i).src=url
+}
+
+}
+
+/* REMOVE BG A */
+
+async function removeBGA(){
+
+let formData=new FormData()
+formData.append("image_file",imgA)
+
+let response=await fetch("https://api.remove.bg/v1.0/removebg",{
+
+method:"POST",
+
+headers:{
+"X-Api-Key":"VLujHFEkGYQK7cnj4Dqs47fB"
+},
+
+body:formData
+
+})
+
+let blob=await response.blob()
+let url=URL.createObjectURL(blob)
+
+for(let i=1;i<=8;i++){
+document.getElementById("a"+i).src=url
+}
+
+}
+
+/* REMOVE BG B */
+
+async function removeBGB(){
+
+let formData=new FormData()
+formData.append("image_file",imgB)
+
+let response=await fetch("https://api.remove.bg/v1.0/removebg",{
+
+method:"POST",
+
+headers:{
+"X-Api-Key":"VLujHFEkGYQK7cnj4Dqs47fB"
+},
+
+body:formData
+
+})
+
+let blob=await response.blob()
+let url=URL.createObjectURL(blob)
+
+for(let i=1;i<=8;i++){
+document.getElementById("b"+i).src=url
+}
+
+}
+
+/* BACKGROUND COLORS */
+
+function setBGA(color){
+document.querySelectorAll("#pageA .photo").forEach(p=>p.style.background=color)
+}
+
+function setBGB(color){
+document.querySelectorAll("#pageB .photo").forEach(p=>p.style.background=color)
+}
+
+function customBGA(){
+let c=document.getElementById("colorPickA").value
+setBGA(c)
+}
+
+function customBGB(){
+let c=document.getElementById("colorPickB").value
+setBGB(c)
+}
+
+function printPage(){
+window.print()
+}
+
+async function downloadPDF(id){
+
+let element=document.getElementById(id)
+
+let canvas=await html2canvas(element,{scale:2})
+
+let imgData=canvas.toDataURL("image/png")
+
+let { jsPDF }=window.jspdf
+
+let pdf=new jsPDF({
+
+orientation:"landscape",
+unit:"in",
+format:[6,4]
+
+})
+
+pdf.addImage(imgData,"PNG",0,0,6,4)
+
+pdf.save("passport-photo.pdf")
+
+}
+
+/* ZOOM */
+
+document.getElementById("zoom").oninput=function(){
+
+let z=this.value
+
+document.querySelectorAll("#pageB img").forEach(img=>{
+img.style.transform="scale("+z+")"
+})
+
+}
+
+</script>
+
+</body>
+</html>
